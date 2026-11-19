@@ -63,3 +63,44 @@ botao.addEventListener("click", () => {
   });
 });
 
+// ===== ATIVIDADE 2: ITERATORS =====
+function* porTipo(lista, tipo) {
+  for (const pokemon of lista) {
+    if (pokemon.tipos.includes(tipo)) {
+      yield pokemon;
+    }
+  }
+}
+
+const seletor = document.getElementById("seletor");
+const proximo = document.getElementById("proximo");
+const statusTipo = document.getElementById("status-tipo");
+const resultadoTipo = document.getElementById("resultado-tipo");
+
+const tipos = [...new Set(pokedex.flatMap((p) => p.tipos))];
+tipos.forEach((tipo) => {
+  seletor.innerHTML += `<option value="${tipo}">${tipo}</option>`;
+});
+
+let iterador;
+
+seletor.addEventListener("change", () => {
+  resultadoTipo.innerHTML = "";
+  statusTipo.textContent = "";
+  if (!seletor.value) {
+    proximo.disabled = true;
+    return;
+  }
+  iterador = porTipo(pokedex, seletor.value);
+  proximo.disabled = false;
+});
+
+proximo.addEventListener("click", () => {
+  const { value, done } = iterador.next();
+  if (done) {
+    proximo.disabled = true;
+    statusTipo.textContent = "Fim da lista";
+    return;
+  }
+  resultadoTipo.innerHTML = cardHTML(value);
+});
