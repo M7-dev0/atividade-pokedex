@@ -104,3 +104,96 @@ proximo.addEventListener("click", () => {
   }
   resultadoTipo.innerHTML = cardHTML(value);
 });
+
+// ===== ATIVIDADE 3: PROMISES =====
+const botaoTime = document.getElementById("botao-time");
+const statusTime = document.getElementById("status-time");
+const resultadoTime = document.getElementById("resultado-time");
+
+botaoTime.addEventListener("click", () => {
+  const ids = [
+    Number(document.getElementById("id1").value),
+    Number(document.getElementById("id2").value),
+    Number(document.getElementById("id3").value),
+  ];
+
+  resultadoTime.innerHTML = "";
+  statusTime.textContent = "";
+  mostrarCarregando();
+
+  Promise.all(ids.map(buscarPokemon))
+    .then((time) => {
+      resultadoTime.innerHTML = time.map(cardHTML).join("");
+    })
+    .catch((erro) => {
+      statusTime.innerHTML = `<span class="erro">${erro.message}</span>`;
+    })
+    .finally(() => esconderCarregando());
+});
+
+// ===== ATIVIDADE 4: ASYNC / AWAIT =====
+const statusLista = document.getElementById("status-lista");
+const listaEl = document.getElementById("lista");
+let listaAtual = [];
+
+async function carregarPokedex() {
+  const salvo = localStorage.getItem("pokedex");
+  if (salvo) return JSON.parse(salvo); // cache
+
+  const resposta = await fetch("pokedex.json");
+  if (!resposta.ok) throw new Error("Falha ao carregar");
+
+  const dados = await resposta.json();
+  localStorage.setItem("pokedex", JSON.stringify(dados));
+  return dados;
+}
+
+function lerFavoritos() {
+  return JSON.parse(localStorage.getItem("favoritos")) || [];
+}
+
+function alternarFavorito(id) {
+  const favoritos = lerFavoritos();
+  const posicao = favoritos.indexOf(id);
+  if (posicao >= 0) favoritos.splice(posicao, 1);
+  else favoritos.push(id);
+  localStorage.setItem("favoritos", JSON.stringify(favoritos));
+}
+
+function renderizarLista(lista) {
+  const favoritos = lerFavoritos();
+  listaEl.innerHTML = lista
+    .map(
+      (p) => `
+      <div class="card">
+        <h3>#${p.id} ${p.nome}</h3>
+        <p>Tipos: ${p.tipos.join(", ")}</p>
+        <p>HP: ${p.hp}</p>
+        <button data-id="${p.id}">
+          ${favoritos.includes(p.id) ? "★ Favorito" : "☆ Favoritar"}
+        </button>
+      </div>`
+    )
+    .join("");
+}
+
+listaEl.addEventListener("click", (e) => {
+  const botaoFav = e.target.closest("button[data-id]");
+  if (!botaoFav) return;
+  alternarFavorito(Number(botaoFav.dataset.id));
+  renderizarLista(listaAtual);
+});
+
+async function iniciar() {
+  try {
+    mostrarCarregando();
+    listaAtual = await carregarPokedex();
+    renderizarLista(listaAtual);
+  } catch (erro) {
+    statusLista.textContent = "Erro ao carregar";
+  } finally {
+    esconderCarregando();
+  }
+}
+
+iniciar();
