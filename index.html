@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokédex Assíncrona</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Pokédex Assíncrona</h1>
+  <p id="carregando" hidden>Carregando…</p>
+
+  <section>
+    <h2>Atividade 1: Buscar pelo número</h2>
+    <input type="number" id="campo-id" placeholder="Ex.: 25">
+    <button id="botao-buscar">Buscar</button>
+    <p id="status"></p>
+    <div id="resultado"></div>
+  </section>
+
+  <section>
+    <h2>Atividade 2: Navegar por tipo</h2>
+    <select id="seletor">
+      <option value="">Escolha um tipo</option>
+    </select>
+    <button id="proximo" disabled>Próximo</button>
+    <p id="status-tipo"></p>
+    <div id="resultado-tipo"></div>
+  </section>
+
+  <section>
+    <h2>Atividade 3: Montar um time</h2>
+    <input type="number" id="id1" placeholder="ID 1">
+    <input type="number" id="id2" placeholder="ID 2">
+    <input type="number" id="id3" placeholder="ID 3">
+    <button id="botao-time">Montar time</button>
+    <p id="status-time"></p>
+    <div id="resultado-time" class="linha"></div>
+  </section>
+
+  <section>
+    <h2>Atividade 4: Pokédex com cache e favoritos</h2>
+    <p id="status-lista"></p>
+    <div id="lista" class="linha"></div>
+  </section>
+
+  <script src="api.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
